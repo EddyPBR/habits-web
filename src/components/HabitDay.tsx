@@ -1,17 +1,25 @@
+import { useState } from "react";
+
 import * as Popover from "@radix-ui/react-popover";
-import * as CheckBox from "@radix-ui/react-checkbox";
 import { ProgressBar } from "./ProgressBar";
+import { HabitsList } from "./HabitsList";
+
 import clsx from "clsx";
-import { Check } from "phosphor-react";
 import dayjs from "dayjs";
 
 interface IHabitDayProps {
   date: Date;
-  completed?: number;
+  defaultCompleted?: number;
   amount?: number;
 }
 
-export function HabitDay({ date, completed = 0, amount = 0 }: IHabitDayProps) {
+export function HabitDay({
+  date,
+  defaultCompleted = 0,
+  amount = 0,
+}: IHabitDayProps) {
+  const [completed, setCompleted] = useState(defaultCompleted);
+
   const completedPercentage =
     amount > 0 ? Math.round((completed / amount) * 100) : 0;
 
@@ -19,6 +27,10 @@ export function HabitDay({ date, completed = 0, amount = 0 }: IHabitDayProps) {
 
   const dayOfWeek = parsedDate.format("dddd");
   const dayInMonth = parsedDate.format("DD/MM");
+
+  function handleCompletedChanged(completedAmount: number) {
+    setCompleted(completedAmount);
+  }
 
   return (
     <Popover.Root>
@@ -49,19 +61,7 @@ export function HabitDay({ date, completed = 0, amount = 0 }: IHabitDayProps) {
 
           <ProgressBar progress={completedPercentage} />
 
-          <div className="mt-6 flex flex-col gap-3">
-            <CheckBox.Root className="flex items-center gap-3 group">
-              <div className="h-8 w-8 rounded-lg flex items-center justify-center bg-zinc-900 border-2 border-zinc-800 transition-colors hover:border-zinc-700 group-data-[state=checked]:bg-green-500 group-data-[state=checked]:border-green-500 group-data-[state=checked]:hover:bg-green-600 group-data-[state=checked]:hover:border-green-600">
-                <CheckBox.Indicator>
-                  <Check size={20} className="text-white" />
-                </CheckBox.Indicator>
-              </div>
-
-              <span className="font-semibold text-xl text-white leading-tight group-data-[state=checked]:line-through group-data-[state=checked]:text-zinc-500">
-                Beber 2L de água
-              </span>
-            </CheckBox.Root>
-          </div>
+          <HabitsList date={date} onCompletedChanged={handleCompletedChanged} />
 
           <Popover.Arrow height={8} width={16} className="fill-zinc-900" />
         </Popover.Content>
