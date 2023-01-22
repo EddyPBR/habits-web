@@ -1,4 +1,4 @@
-import { ISummaryDTO } from "../@types/SummaryDTO";
+import { ISummaryDTO } from "../@types/DTOs";
 import { api, apiException } from "../lib/axios";
 
 export async function getSummary() {
